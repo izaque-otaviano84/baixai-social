@@ -1,4 +1,4 @@
-"""Isolate media processing and restrict outbound connections to public HTTPS."""
+"""Isola o processamento e restringe conexões de saída a destinos públicos HTTPS."""
 import ipaddress
 import resource
 import socket
@@ -17,7 +17,6 @@ def public_endpoint(address):
 
 
 def restrict_network():
-    # Inspect the numeric destination at connect time, after DNS resolution.
     original_connect = socket.socket.connect
     original_connect_ex = socket.socket.connect_ex
 
@@ -38,9 +37,14 @@ def restrict_network():
 if __name__ == "__main__":
     restrict_network()
     resource.setrlimit(resource.RLIMIT_FSIZE, (MAX_FILE_BYTES, MAX_FILE_BYTES))
-    url, output_format, folder = sys.argv[1:]
+    url, output_format, folder, *flags = sys.argv[1:]
+    private = flags == ["--private"]
+    if flags and not private:
+        sys.exit(2)
     try:
-        download_to_folder(url, output_format, Path(folder))
+        download_to_folder(url, output_format, Path(folder), private=private)
+    except ValueError:
+        sys.exit(4)
     except DownloadError as error:
         detail = str(error).lower()
         sys.exit(3 if "10 minutos" in detail or "40 mib" in detail else 2)
