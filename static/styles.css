@@ -1,0 +1,59 @@
+:root {
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #202234; background: #f7f8fb; font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse 58% 38% at 50% 33%,#eeeaff 0%,transparent 80%),#f7f8fb}
+button,input{font:inherit}
+button{cursor:pointer}
+.page{min-height:100vh;display:flex;flex-direction:column;max-width:1240px;margin:auto;padding:0 40px}
+.header{display:flex;align-items:center;justify-content:space-between;padding-top:29px}
+.brand{display:inline-flex;align-items:center;gap:11px;color:#202234;text-decoration:none;font-size:27px;font-weight:830;letter-spacing:-1.6px}
+.brand-mark{display:grid;place-items:center;height:39px;width:39px;border-radius:12px;background:#6b52ef;color:white;box-shadow:0 7px 15px #6950e72e}
+.brand-mark svg{width:21px;height:21px}.accent{color:#6b52ef}.brand-dot{color:#202234}
+.header-label{display:flex;gap:8px;align-items:center;color:#6f7082;font-weight:550;font-size:12px}
+.status-dot{width:7px;height:7px;border-radius:100%;background:#3ac690;box-shadow:0 0 0 3px #d9f5e9}
+.main{width:100%;max-width:590px;margin:auto;text-align:center;padding:62px 0 54px}
+.platforms{display:inline-flex;align-items:center;gap:15px;padding:9px 17px;border-radius:30px;background:#fff;border:1px solid #e9e8f2;box-shadow:0 2px 12px #5b3ddc08;color:#3f4051;font-weight:650;font-size:12px}
+.platform{display:flex;align-items:center;gap:6px}.platform-symbol{font-weight:900;font-size:18px;line-height:1}.instagram{color:#dc4f95}.tiktok{color:#171a2f}
+.platform-divider{width:1px;height:15px;background:#e6e4ee}
+h1{font-size:clamp(36px,5vw,56px);font-weight:800;letter-spacing:-2.9px;line-height:1.1;margin:25px auto 16px}
+h1 span{color:#7154ef;display:inline-block}
+.intro{color:#7c7e92;line-height:1.65;font-size:15px;max-width:410px;margin:0 auto 29px}
+.download-card{text-align:left;background:#fff;padding:30px;border:1px solid #ebeaf3;border-radius:23px;box-shadow:0 20px 56px #2c247d0c,0 4px 10px #24165e07}
+.field-label{font-size:13px;font-weight:720;color:#393b4b}
+.url-field{margin-top:11px;display:flex;align-items:center;gap:10px;width:100%;border:1.5px solid #e4e4ed;border-radius:12px;height:52px;padding:0 14px;transition:border-color .2s,box-shadow .2s}
+.url-field:focus-within{border-color:#846ff0;box-shadow:0 0 0 4px #7357ed14}
+.url-field.invalid{border-color:#e78487}
+.url-icon{width:19px;height:19px;flex-shrink:0;color:#9999aa}
+.url-field input{width:100%;height:100%;border:0;outline:0;font-size:13px;background:transparent;color:#25263b;min-width:0}
+.url-field input::placeholder{color:#a6a5b5}
+.clear-button{border:0;background:transparent;color:#9293a3;font-size:22px;line-height:1;padding:2px}
+.field-hint{font-size:11px;color:#9999a8;margin:9px 0 27px}
+.format-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.optional{font-size:11px;color:#a3a3b0}
+.formats{display:grid;grid-template-columns:1fr 1fr;gap:12px;border:0;padding:0;margin:0 0 21px;min-width:0}
+.format-option{position:relative;display:flex;align-items:center;gap:12px;min-width:0;padding:14px 13px;border:1.5px solid #e9e9f0;border-radius:12px;cursor:pointer;transition:background .2s,border-color .2s}
+.format-option:has(input:checked){border-color:#8d7bf1;background:#f9f7ff}
+.format-option:has(input:focus-visible){outline:3px solid #d9d1ff;outline-offset:2px}
+.format-option input{position:absolute;opacity:0;width:1px;height:1px}
+.format-icon{width:36px;height:36px;display:grid;place-items:center;background:#f3f1fb;color:#6b52df;border-radius:9px;flex:none}
+.format-icon svg{width:19px;height:19px}
+.format-text{display:flex;flex:1;flex-direction:column;gap:4px;min-width:0}.format-text strong{font-size:13px;color:#333349}.format-text small{font-size:10px;color:#9393a5;white-space:nowrap}
+.radio-decoration{height:16px;width:16px;border:1.5px solid #d2d1e0;border-radius:50%;display:block;flex:none}
+input:checked~.radio-decoration{border:5px solid #7358ee}
+.submit-button{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;height:51px;background:#6b52ef;border:1px solid #6346df;border-radius:12px;color:white;font-size:14px;font-weight:740;box-shadow:0 6px 17px #6b52ef30;transition:transform .15s,background .15s}
+.submit-button:hover:not(:disabled){background:#5d44e0;transform:translateY(-1px)}
+.submit-button:disabled{cursor:wait;opacity:.85}.submit-button svg{width:18px;height:18px}
+.loader{display:none;width:17px;height:17px;border:2px solid #ffffff80;border-top-color:white;border-radius:50%;animation:spin .75s linear infinite}
+.submit-button.loading .loader{display:block}.submit-button.loading .button-arrow{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.message{text-align:center;font-size:12px;color:#676a7f;line-height:1.5;margin:0;max-height:0;overflow:hidden;transition:max-height .2s,margin .2s}
+.message:not(:empty){max-height:100px;margin-top:14px}.message.error{color:#d34553}.message.success{color:#289069}
+.features{display:flex;justify-content:center;gap:24px;color:#9798a8;font-size:11px;margin-top:26px}
+.footer{margin-top:auto;padding:0 0 24px;text-align:center;color:#a1a2b0;font-size:11px;line-height:1.6}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:620px){.page{padding:0 18px}.header{padding-top:20px}.brand{font-size:24px}.brand-mark{width:36px;height:36px}.header-label{font-size:10px}.main{padding:62px 0 38px}h1{letter-spacing:-1.9px;margin-top:22px;font-size:40px}.intro{font-size:14px;max-width:330px}.download-card{padding:21px 18px;border-radius:20px}.formats{gap:9px}.format-option{padding:12px 9px;gap:8px}.format-icon{width:33px;height:33px}.format-text small{font-size:9px}.radio-decoration{width:14px;height:14px}input:checked~.radio-decoration{border-width:4px}.features{flex-direction:column;gap:10px}.footer{font-size:10px;padding-bottom:19px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+.paste-button{flex:none;border:0;border-radius:8px;padding:8px 10px;background:#f0edff;color:#5138ca;font-weight:700;min-height:34px}
