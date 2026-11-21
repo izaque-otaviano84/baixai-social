@@ -1,40 +1,80 @@
-# Baixaí
+# Baixaí — atualização Apple-inspired + TikTok autorizado
 
-Aplicação em português para baixar um vídeo público autorizado do Instagram ou TikTok em MP4 ou extrair seu áudio em MP3. A interface funciona sem conta e sem anúncios. O backend usa FastAPI, yt-dlp e FFmpeg.
+Aplicação FastAPI + yt-dlp + FFmpeg. Interface adaptativa, visual discreto inspirado nas recomendações de materiais da Apple, título compacto, botão **Colar**, escolha entre MP4 e MP3, modo claro/escuro e painel opcional de **acesso autorizado ao TikTok**.
 
-## Desenvolvimento
+## Principais alterações
 
-O worker usa recursos do Linux. No Windows ou macOS, use Docker.
+- `static/index.html`, `static/styles.css`, `static/script.js`: UI renovada, com título menor, fontes de sistema, formulário como foco, botão de colar e suporte a iPhone/desktop e modo escuro.
+- `app.py`: aceita `private: true` somente para TikTok, exige chave de administrador e configura cookies da conta autorizada. Mantém os limites por IP, tamanho, duração e tamanho do corpo da requisição.
+- `worker.py`: preserva o isolamento via subprocesso, limite de 40 MiB e bloqueio de conexões para IPs internos. Cookies são escritos apenas em arquivo temporário com permissões 0600, no worker, e excluídos ao final.
+- `Dockerfile`: mantém usuário sem privilégios, FFmpeg e deploy via Docker.
+
+## Publicar no repositório existente
+
+Atualize **os arquivos correspondentes**, mantendo os caminhos da raiz:
+`app.py`, `worker.py`, `Dockerfile`, `static/index.html`, `static/styles.css`, `static/script.js`, `README.md`, `tests/test_app.py`.
+
+O `render.yaml` e `requirements.txt` continuam compatíveis. No Render, se o serviço estiver conectado ao branch `main` com deploy automático, o commit disparará um novo deploy. **Faça backup da versão atual antes de trocar os arquivos.**
+
+## Uso público e privado
+
+- **Modo padrão:** links públicos de Instagram e TikTok, sem login e sem usar cookies de administrador.
+- **Modo autorizado:** somente para vídeos do TikTok acessíveis à sua própria sessão ou a uma conta à qual você tem permissão. Mesmo autenticado, alguns downloads podem falhar por restrições do TikTok ou do yt-dlp.
+- Conteúdos privados de terceiros sem autorização, DRM ou acessos não concedidos pela plataforma **não são contornados**.
+
+### Configurar o modo autorizado no Render
+
+Em **Render > seu Web Service > Environment**, adicione:
+
+| Variável | Valor |
+| --- | --- |
+| `PRIVATE_DOWNLOAD_KEY` | Uma chave aleatória forte, com ao menos 32 caracteres. Gere localmente com `python -c "import secrets;print(secrets.token_urlsafe(32))"` |
+| `TIKTOK_COOKIES_BASE64` | Conteúdo em Base64 de um arquivo Netscape `cookies.txt` contendo cookies da sessão TikTok autorizada |
+
+O arquivo `cookies.txt` deve conter a linha inicial `# Netscape HTTP Cookie File` e cookies do domínio `.tiktok.com`/`tiktok.com`. Gere-o **localmente**, não no navegador público do site, e confirme que se refere a uma conta que pode visualizar o vídeo. As instruções oficiais de `yt-dlp` para exportação estão em <https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp>.
+
+Converta localmente para Base64:
+
+```sh
+# macOS / Linux
+python3 -c 'import base64,pathlib;print(base64.b64encode(pathlib.Path("cookies.txt").read_bytes()).decode())'
+```
+
+```powershell
+# Windows PowerShell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes((Resolve-Path .\cookies.txt)))
+```
+
+**Segurança:** Base64 não é criptografia. Não envie cookies, códigos de sessão ou a chave de administrador por chat, GitHub, HTML ou JavaScript; configure-os somente nas variáveis secretas do Render. Uma sessão exportada pode dar acesso à conta — use uma conta dedicada quando possível e revogue a sessão se for exposta. Não publique logs contendo esses valores. Se não configurar as duas variáveis, o modo público continua funcionando e o modo privado responde com erro 503.
+
+O acesso privado é exclusivo da API administrativa. Envie a chave por um cliente de API autorizado, em HTTPS.
+
+## Desenvolvimento e testes
+
+Linux com Python 3.12+ e FFmpeg:
+
+```sh
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt pytest httpx
+pytest -q
+uvicorn app:app --reload --port 10000
+```
+
+No Windows/macOS também é possível testar com Docker:
 
 ```sh
 docker build -t baixai .
 docker run --rm -p 10000:10000 baixai
 ```
 
-Em Linux com Python 3.12 e FFmpeg instalados:
+Abra <http://localhost:10000>.
 
-```sh
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install -r requirements.txt pytest httpx
-python -m pytest -q
-python -m uvicorn app:app --port 10000
-```
+A API aceita `POST /api/download` com `{"url":"https://www.tiktok.com/@exemplo/video/123456789","format":"mp4","private":false}`. Para o modo autorizado envie `private:true` e o cabeçalho `X-Baixai-Admin-Key`. O serviço utiliza um download por vez e exclui o arquivo temporário ao concluir a resposta.
 
-Abra http://localhost:10000. Os testes automatizados verificam validação, respostas HTTP e limpeza usando um arquivo simulado. Para verificar cada plataforma, use um vídeo público próprio ou explicitamente autorizado e teste os dois formatos no endereço do deploy.
+## Limitações
 
-## Render
-
-Use um Web Service Free com o Dockerfile da raiz ou o Blueprint em `render.yaml`. O container escuta em `0.0.0.0` na porta do ambiente `PORT` (padrão 10000). O health check é `/health`. `PROCESS_TIMEOUT_SECONDS` tem padrão de 90 segundos. O serviço não exige tokens, cookies ou credenciais de plataforma.
-
-O Render Free oferece HTTPS e 750 horas por mês por workspace. A instância hiberna após 15 minutos sem tráfego. Confira as franquias de transferência e build em Billing. Com um método de pagamento cadastrado, o tráfego acima da franquia pode gerar cobrança. O Render pode suspender instâncias gratuitas que iniciem alto volume de tráfego. Consulte https://render.com/docs/free.
-
-## API e limites
-
-`POST /api/download` recebe JSON com `url` e `format` (`mp4` ou `mp3`) e devolve um anexo no formato solicitado. O serviço processa um arquivo por vez, incluindo a transferência, e apaga o diretório temporário no término da resposta ou em caso de erro. Limites de 40 MiB, 10 minutos por vídeo, 4 tentativas por minuto por IP e 20 por minuto no serviço. Os limites de requisição são mantidos em memória.
-
-O serviço limita a entrada a links de vídeo das duas plataformas e as conexões do extrator a IPs públicos na porta 443. É necessário que a plataforma ofereça um formato HTTPS direto e permita o acesso pelo IP do servidor. Conteúdo privado, publicações com múltiplos vídeos, feeds e links que exijam autenticação ficam fora do escopo.
-
-## Manutenção
-
-Atualize a versão de yt-dlp em `requirements.txt` quando um extrator deixar de funcionar. Rode os testes, confirme os downloads autorizados nos dois formatos e envie o commit ao branch acompanhado pelo Render. Acompanhe o health check e os logs de build. O plano Free permite voltar a um dos dois últimos deploys.
+- Render Free pode hibernar após inatividade e possui franquias de horas/transferência; confira <https://render.com/docs/free>.
+- O serviço usa IPs de datacenter, que podem ser bloqueados por Instagram/TikTok.
+- Limites atuais: 40 MiB, 10 minutos, 90 segundos por processamento (configurável por `PROCESS_TIMEOUT_SECONDS`), 4 tentativas por minuto por IP e 20 por minuto globalmente (contagem em memória).
+- Os testes automáticos simulam o download para exercitar as respostas e a limpeza; **não demonstram que vídeos privados reais funcionem**. Teste no serviço publicado com um vídeo autorizado.
