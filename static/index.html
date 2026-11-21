@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f8fb" />
+    <meta name="description" content="Baixe vídeos públicos autorizados do Instagram e TikTok em MP4 ou MP3." />
+    <title>Baixaí — Baixador de vídeos</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/script.js" defer></script>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header" aria-label="Cabeçalho">
+        <a class="brand" href="/" aria-label="Baixaí - Início">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span>baixa<span class="accent">í</span><span class="brand-dot">.</span></span>
+        </a>
+        <span class="header-label"><span class="status-dot"></span> Simples. Sem cadastro.</span>
+      </header>
+
+      <main class="main">
+        <div class="platforms" aria-label="Plataformas compatíveis">
+          <span class="platform"><span class="platform-symbol instagram" aria-hidden="true">◎</span> Instagram</span>
+          <span class="platform-divider"></span>
+          <span class="platform"><span class="platform-symbol tiktok" aria-hidden="true">♪</span> TikTok</span>
+        </div>
+        <h1>Seu vídeo, <span>em um clique.</span></h1>
+        <p class="intro">Cole o link, escolha o formato e faça o download. Rápido, direto e sem complicação.</p>
+
+        <section class="download-card" aria-label="Preparar download">
+          <form id="download-form" novalidate>
+            <label for="video-url" class="field-label">Link do vídeo</label>
+            <div class="url-field" id="url-field">
+              <svg viewBox="0 0 24 24" class="url-icon" fill="none" aria-hidden="true"><path d="M10 13.7a5 5 0 0 0 7.07 0l2.12-2.12a5 5 0 1 0-7.07-7.07L10.9 5.72M14 10.3a5 5 0 0 0-7.07 0L4.8 12.42a5 5 0 1 0 7.07 7.07l1.22-1.22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <input id="video-url" name="url" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="Cole o link do Instagram ou TikTok..." required aria-describedby="url-help" />
+              <button class="clear-button" type="button" id="clear-button" aria-label="Limpar link" hidden>×</button>
+              <button class="paste-button" type="button" id="paste-button">Colar</button>
+            </div>
+            <p class="field-hint" id="url-help">Funciona com Reels e vídeos públicos.</p>
+
+            <div class="format-heading"><span class="field-label">Escolha o formato</span><span class="optional">Selecione uma opção</span></div>
+            <fieldset class="formats">
+              <legend class="sr-only">Formato de download</legend>
+              <label class="format-option">
+                <input type="radio" name="format" value="mp4" checked />
+                <span class="format-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="m10 9 5 3-5 3V9Z" fill="currentColor"/></svg></span>
+                <span class="format-text"><strong>MP4</strong><small>Vídeo com áudio</small></span>
+                <span class="radio-decoration"></span>
+              </label>
+              <label class="format-option">
+                <input type="radio" name="format" value="mp3" />
+                <span class="format-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l11-2v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="6" cy="18" rx="3" ry="2" stroke="currentColor" stroke-width="1.8"/><ellipse cx="17" cy="16" rx="3" ry="2" stroke="currentColor" stroke-width="1.8"/></svg></span>
+                <span class="format-text"><strong>MP3</strong><small>Somente áudio</small></span>
+                <span class="radio-decoration"></span>
+              </label>
+            </fieldset>
+
+            <button class="submit-button" id="submit-button" type="submit">
+              <span class="button-label">Baixar agora</span>
+              <svg class="button-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="loader" aria-hidden="true"></span>
+            </button>
+            <p class="message" id="message" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+        <div class="features"><span>✓ Sem precisar instalar nada</span><span>✓ Funciona no celular e computador</span></div>
+      </main>
+
+      <footer class="footer">Para vídeos públicos que você tenha direito de baixar. Respeite os direitos autorais e as regras das plataformas.</footer>
+    </div>
+  </body>
+</html>
